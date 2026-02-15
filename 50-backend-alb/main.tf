@@ -1,5 +1,6 @@
 module "backend_alb" {
   source = "terraform-aws-modules/alb/aws"
+  version = "9.16.0"
   internal = true # private load balancer
   name    = "${var.project}-${var.environment}-backend-alb" #roboshop-dev-backend-alb
   vpc_id  = local.vpc_id
@@ -7,7 +8,8 @@ module "backend_alb" {
   create_security_group = false
   security_groups = [local.backend_alb_sg_id]
 
-
+  enable_deletion_protection = false
+  
   tags = merge(
     local.common_tags,
     {
