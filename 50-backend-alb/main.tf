@@ -7,6 +7,7 @@ module "backend_alb" {
   create_security_group = false
   security_groups = [local.backend_alb_sg_id]
 
+
   tags = merge(
     local.common_tags,
     {
@@ -14,3 +15,20 @@ module "backend_alb" {
     }
   )
 }
+
+resource "aws_lb_listener" "backend_alb" {
+  load_balancer_arn = module.backend_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = "<h1>Hello, I am from Backend ALB<h1> "
+      status_code  = "200"
+    }
+  }
+}
+
