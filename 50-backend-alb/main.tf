@@ -9,7 +9,7 @@ module "backend_alb" {
   security_groups = [local.backend_alb_sg_id]
 
   enable_deletion_protection = false
-  
+
   tags = merge(
     local.common_tags,
     {
@@ -34,3 +34,14 @@ resource "aws_lb_listener" "backend_alb" {
   }
 }
 
+resource "aws_route53_record" "backend_alb" {
+  zone_id = var.zone_id
+  name    = "*.backend-dev.${var.zone_name}"
+  type    = "A"
+
+  alias {
+    name                   = module.backend_alb.dns_name
+    zone_id                = module.backend_alb.zone_id # This is the zone id of ALB
+    evaluate_target_health = true
+  }
+}
